@@ -1,6 +1,6 @@
-# Pollar-Shell-Scripts
+# Pollar-Scripts
 
-Contains bash scripts that are used to automate workflows relavent to pollar.
+Contains various language scripts that are used to automate workflows relavent to pollar.
 
 Scripts are grouped into folders of similar relavent scripts
 
