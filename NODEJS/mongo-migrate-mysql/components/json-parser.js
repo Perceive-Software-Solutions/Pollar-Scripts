@@ -7,13 +7,15 @@ module.exports = async (path) => {
   const data_map = {};
 
   //Determine the path to the data
-  const pathToData = ( path || '../data/' );
+  const pathToData = ( path || './data/' );
 
   //Determine the files within the path
-  files = fs.readdirSync(pathToData)
+  files = fs.readdirSync(pathToData);
+
+  console.log(files)
 
   //Read all files within the path
-  for(file in files){
+  for(file of files){
 
     //reads the input line by line
     const fileStream = fs.createReadStream(pathToData + file, 'utf-8')
@@ -23,10 +25,18 @@ module.exports = async (path) => {
       crlfDelay: Infinity
     });
 
+    list = [];
+
     for await (const line of lineReader){
-      console.log(line);
+      list.push(JSON.parse(line))
     }
 
+    var fileName = file.split('_')[1];
+
+    data_map[fileName] = list;
+
   }
+
+  return data_map;
 
 }
