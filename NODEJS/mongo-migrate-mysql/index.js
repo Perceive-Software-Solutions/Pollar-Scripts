@@ -13,7 +13,7 @@ var connection = mysql.createConnection({
 });
 
 //Connect to the instance
-connection.connect(function(err) {
+connection.connect(async function(err) {
   if (err) {
     console.error('Database connection failed: ' + err.stack);
     return;
@@ -23,7 +23,7 @@ connection.connect(function(err) {
 
   //Retreive Files
   console.log('Loading Files');
-  data = parse_json();
+  data = await parse_json();
 
   //Run the migration functions
   console.log('Running Migration.');
