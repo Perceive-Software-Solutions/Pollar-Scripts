@@ -12,8 +12,6 @@ module.exports = async (path) => {
   //Determine the files within the path
   files = fs.readdirSync(pathToData);
 
-  console.log(files)
-
   //Read all files within the path
   for(file of files){
 
