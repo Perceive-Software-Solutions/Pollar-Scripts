@@ -1,0 +1,1 @@
+Insert the pollar exported mongo data into the /data folder within the root of the project
