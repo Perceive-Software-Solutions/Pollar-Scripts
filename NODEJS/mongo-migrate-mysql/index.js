@@ -23,7 +23,7 @@ connection.connect(function(err) {
 
 //Retreive Files
 console.log('Loading Files');
-parse_json();
+data = parse_json();
 
 
 //Run the migration functions
