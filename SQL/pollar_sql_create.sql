@@ -1,0 +1,280 @@
+USE db1;
+
+CREATE TABLE AssetCollection (
+  collectionID INT NOT NULL AUTO_INCREMENT,
+  PIT DATETIME,
+  PRIMARY KEY (collectionID)
+);
+
+CREATE TABLE Asset (
+  assetID INT NOT NULL AUTO_INCREMENT,
+  link TEXT NOT NULL,
+  collectionID INT NOT NULL,
+  assetType ENUM('Picture', 'Video', 'Gif', 'Link'),
+  PRIMARY KEY (assetID),
+  FOREIGN KEY (collectionID) REFERENCES AssetCollection(collectionID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE Category (
+  categoryID INT NOT NULL AUTO_INCREMENT,
+  categoryName TEXT NOT NULL,
+  PRIMARY KEY (categoryID)
+);
+
+CREATE TABLE Topic (
+  topicID INT NOT NULL AUTO_INCREMENT,
+  topicName TEXT NOT NULL,
+  categoryID INT,
+  assetID INT NOT NULL,
+  PRIMARY KEY (topicID),
+  FOREIGN KEY (assetID) REFERENCES AssetCollection(collectionID),
+  FOREIGN KEY (categoryID) REFERENCES Category(categoryID) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+CREATE TABLE UserInfo (
+  userInfoID INT NOT NULL AUTO_INCREMENT,
+  firstName VARCHAR(100),
+  lastName VARCHAR(100),
+  gender VARCHAR(100) DEFAULT NULL,
+  profilePicture INT DEFAULT NULL,
+  username VARCHAR(100) NOT NULL UNIQUE,
+  PRIMARY KEY (userInfoID),
+  FOREIGN KEY (profilePicture) REFERENCES AssetCollection(collectionID) ON DELETE SET NULL
+);
+
+CREATE TABLE UserMain (
+  userMainID INT NOT NULL AUTO_INCREMENT,
+  userInfoID INT NOT NULL,
+  hashedPassword VARCHAR(300) NOT NULL,
+  readReceipts BOOL DEFAULT 1,
+  contactsSynced BOOL DEFAULT 0,
+  PRIMARY KEY (userMainID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE Poll (
+  pollID INT NOT NULL AUTO_INCREMENT,
+  userInfoID INT,
+  topicID INT,
+  assetID INT DEFAULT NULL,
+  title TEXT DEFAULT NULL,
+  content MEDIUMTEXT NOT NULL,
+  PIT DATETIME NOT NULL,
+  pollStatus ENUM('Submitted', 'Approved', 'Declined') NOT NULL DEFAULT 'Submitted',
+  pollType ENUM('Rule', 'Report', 'Poll') NOT NULL DEFAULT 'Poll',
+  anon BOOL NOT NULL DEFAULT 0,
+  draft BOOL NOT NULL DEFAULT 0,
+  deleted BOOL NOT NULL DEFAULT 0,
+  PRIMARY KEY (pollID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE SET NULL,
+  FOREIGN KEY (topicID) REFERENCES Topic(topicID) ON DELETE SET NULL,
+  FOREIGN KEY (assetID) REFERENCES AssetCollection(collectionID) ON DELETE SET NULL
+);
+
+CREATE TABLE Post (
+  postID INT NOT NULL AUTO_INCREMENT,
+  userInfoID INT,
+  parentTopic INT,
+  parentType ENUM("Topic", "Poll") NOT NULL DEFAULT "Topic",
+  parentID INT,
+  messageText MEDIUMTEXT NOT NULL,
+  PIT DATETIME NOT NULL,
+  vote BOOL DEFAULT NULL,
+  cachedLikes INT DEFAULT 0,
+  isHidden BOOL DEFAULT 0,
+  draft BOOL DEFAULT 0,
+  deleted BOOL NOT NULL DEFAULT 0,
+  assetID INT DEFAULT NULL,
+  PRIMARY KEY (postID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE SET NULL,
+  FOREIGN KEY (parentTopic) REFERENCES Topic(topicID) ON DELETE SET NULL,
+  FOREIGN KEY (parentID) REFERENCES Poll(pollID) ON DELETE SET NULL,
+  FOREIGN KEY (assetID) REFERENCES AssetCollection(collectionID) ON DELETE SET NULL
+);
+
+CREATE TABLE Chat (
+  channelID VARCHAR(200) NOT NULL UNIQUE,
+  assetID INT DEFAULT NULL,
+  chatName TEXT,
+  timeToken INT DEFAULT 0,
+  groupChat BOOL DEFAULT 0,
+  PRIMARY KEY (channelID),
+  FOREIGN KEY (assetID) REFERENCES AssetCollection(collectionID) ON DELETE SET NULL
+);
+
+CREATE TABLE ChatMembership (
+  userInfoID INT NOT NULL,
+  channelID VARCHAR(200) NOT NULL,
+  accepted BOOL DEFAULT 0,
+  readReceipts BOOL DEFAULT 1,
+  notifications BOOL DEFAULT 0,
+  PRIMARY KEY (userInfoID, channelID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
+  FOREIGN KEY (channelID) REFERENCES Chat(channelID) ON DELETE CASCADE
+);
+
+CREATE TABLE UserDevice (
+  token VARCHAR(500) NOT NULL,
+  userMainID INT NOT NULL,
+  device VARCHAR(50),
+  PIT DATETIME NOT NULL,
+  PRIMARY KEY (token, userMainID),
+  FOREIGN KEY (userMainID) REFERENCES UserMain(userMainID) ON DELETE CASCADE
+);
+
+CREATE TABLE Follow (
+  userInfoID INT NOT NULL,
+  recipientID INT NOT NULL,
+  PRIMARY KEY (userInfoID, recipientID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
+  FOREIGN KEY (recipientID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE
+);
+
+CREATE TABLE PollResponse (
+  userInfoID INT NOT NULL,
+  pollID INT NOT NULL,
+  createdBy INT,
+  vote BOOL,
+  PIT DATETIME NOT NULL,
+  PRIMARY KEY (userInfoID, pollID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID),
+  FOREIGN KEY (createdBy) REFERENCES UserInfo(userInfoID) ON DELETE SET NULL,
+  FOREIGN KEY (pollID) REFERENCES Poll(pollID) ON DELETE CASCADE
+);
+
+CREATE TABLE Story (
+  userInfoID INT NOT NULL,
+  pollID INT NOT NULL,
+  pollResponseUserID INT NOT NULL,
+  expireAt DATETIME NOT NULL,
+  seen BOOL NOT NULL DEFAULT 0,
+  PRIMARY KEY (userInfoID, pollID, pollResponseUserID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
+  FOREIGN KEY (pollResponseUserID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
+  FOREIGN KEY (pollID) REFERENCES Poll(pollID) ON DELETE CASCADE,
+  FOREIGN KEY (pollResponseUserID, pollID) REFERENCES PollResponse(userInfoID, pollID) ON DELETE CASCADE
+);
+
+CREATE TABLE UserDeactivated (
+  userMainID INT NOT NULL,
+  PIT DATETIME NOT NULL,
+  PRIMARY KEY (userMainID),
+  FOREIGN KEY (userMainID) REFERENCES UserMain(userMainID) ON DELETE CASCADE
+);
+
+CREATE TABLE Rule (
+  topicID INT NOT NULL,
+  pollID INT NOT NULL,
+  PRIMARY KEY (topicID, pollID),
+  FOREIGN KEY (topicID) REFERENCES Topic(topicID) ON DELETE CASCADE,
+  FOREIGN KEY (pollID) REFERENCES Poll(pollID) ON DELETE CASCADE
+);
+
+CREATE TABLE PostStat (
+  userInfoID INT,
+  postID INT NOT NULL,
+  PIT DATETIME NOT NULL,
+  liked BOOL DEFAULT 0,
+  PRIMARY KEY (userInfoID, postID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
+  FOREIGN KEY (postID) REFERENCES Post(postID) ON DELETE CASCADE
+);
+
+CREATE TABLE Subscription (
+  userInfoID INT NOT NULL,
+  topicID INT NOT NULL,
+  PRIMARY KEY (topicID, userInfoID),
+  FOREIGN KEY (topicID) REFERENCES Topic(topicID) ON DELETE CASCADE,
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE
+);
+
+
+CREATE TABLE NotificationSettings (
+  userMainID INT NOT NULL,
+  -- Post
+  POSTS_LIKES ENUM('OFF', 'FOLLOWERS', 'EVERYONE') DEFAULT 'EVERYONE',
+  POSTS_NEW_TRUSTS ENUM('OFF', 'FOLLOWERS', 'EVERYONE') DEFAULT 'EVERYONE',
+  POSTS_FIRST_POSTS ENUM('OFF', 'FOLLOWERS', 'EVERYONE') DEFAULT 'FOLLOWERS',
+  POSTS_REPLIES ENUM('OFF', 'FOLLOWERS', 'EVERYONE') DEFAULT 'EVERYONE',
+  POSTS_VOTES ENUM('OFF', 'FOLLOWERS', 'EVERYONE') DEFAULT 'FOLLOWERS',
+  -- Poll
+  POLLS_ACCEPTED_POLL_SUBMISSION BOOL DEFAULT 1,
+  POLLS_EXPIRE_SOON BOOL DEFAULT 1,
+  POLLS_RESULTS BOOL DEFAULT 1,
+  POLLS_TRENDING BOOL DEFAULT 1,
+  -- Message
+  MESSAGES_MESSAGE BOOL DEFAULT 1,
+  MESSAGES_REQUEST BOOL DEFAULT 1,
+  MESSAGES_GROUP_REQUEST BOOL DEFAULT 1,
+  -- Follow
+  FOLLOWS_NEW_FOLLOW BOOL DEFAULT 1,
+  FOLLOWS_NEW_FRIEND BOOL DEFAULT 1,
+  -- Trusts (stories)
+  TRUSTS_TRUST BOOL DEFAULT 1,
+  TRUSTS_TRUSTING BOOL DEFAULT 1,
+  PRIMARY KEY (userMainID),
+  FOREIGN KEY (userMainID) REFERENCES UserMain(userMainID) ON DELETE CASCADE
+);
+
+CREATE TABLE Trust (
+  userInfoID INT NOT NULL,
+  recipientID INT NOT NULL,
+  topicID INT NOT NULL,
+  cachedAgrees INT DEFAULT 0,
+  cachedDisagrees INT DEFAULT 0,
+  PRIMARY KEY (userInfoID, recipientID, topicID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
+  FOREIGN KEY (recipientID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
+  FOREIGN KEY (topicID) REFERENCES Topic(topicID) ON DELETE CASCADE
+);
+
+CREATE TABLE UserPhone (
+  phoneNumber VARCHAR(20) NOT NULL,
+  userMainID INT NOT NULL,
+  code INT NOT NULL,
+  verified BOOL NOT NULL DEFAULT 0,
+  PRIMARY KEY (phoneNumber),
+  FOREIGN KEY (userMainID) REFERENCES UserMain(userMainID) ON DELETE CASCADE
+);
+
+CREATE TABLE UserBlocking (
+  userInfoID INT NOT NULL,
+  userBlocked INT NOT NULL,
+  PRIMARY KEY (userInfoID, userBlocked),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
+  FOREIGN KEY (userBlocked) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE
+);
+
+CREATE TABLE UserEmail (
+  email VARCHAR(100) NOT NULL,
+  userMainID INT NOT NULL,
+  code INT NOT NULL,
+  verified BOOL NOT NULL DEFAULT 0,
+  PRIMARY KEY (email),
+  FOREIGN KEY (userMainID) REFERENCES UserMain(userMainID) ON DELETE CASCADE
+);
+
+CREATE TABLE Notif (
+  notificationID INT NOT NULL AUTO_INCREMENT,
+  userInfoID INT NOT NULL,
+  actorID INT,
+  notifType VARCHAR(50) NOT NULL,
+  typeID INT,
+  subjectNotif TEXT,
+  PIT DATETIME NOT NULL,
+  seen BOOL NOT NULL DEFAULT 0,
+  PRIMARY KEY (notificationID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
+  FOREIGN KEY (actorID) REFERENCES UserInfo(userInfoID) ON DELETE SET NULL
+);
+
+CREATE TABLE AssetMessage (
+  userInfoID INT,
+  assetID INT NOT NULL,
+  channelID VARCHAR(200) NOT NULL,
+  PRIMARY KEY (assetID, channelID),
+  FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE SET NULL,
+  FOREIGN KEY (assetID) REFERENCES AssetCollection(collectionID) ON DELETE CASCADE,
+  FOREIGN KEY (channelID) REFERENCES Chat(channelID) ON DELETE CASCADE,
+  FOREIGN KEY (userInfoID, channelID) REFERENCES ChatMembership(userInfoID, channelID)
+);
