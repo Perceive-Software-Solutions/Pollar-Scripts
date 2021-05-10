@@ -5,5 +5,5 @@ module.exports = (conn, data) => {
   //Calls all the migrate functions
 
   //Migrate user infos
-  userInfoMigrate(conn, data.userinfos)
+  userInfoMigrate(conn, data)
 }

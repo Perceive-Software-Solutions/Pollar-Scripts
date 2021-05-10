@@ -1,23 +1,18 @@
-var mysql = require('mysql');
+var mysql = require('sync-mysql');
 require('dotenv').config();
 var parse_json = require('./components/json-parser');
 var migrate = require('./components/migration-helper');
 
-//Creating a connection with the MySQL instance
-var connection = mysql.createConnection({
-  host     : process.env.RDS_HOSTNAME,
-  user     : process.env.RDS_USERNAME,
-  password : process.env.RDS_PASSWORD,
-  port     : process.env.RDS_PORT,
-  ssl      : "Amazon RDS",
-});
-
-//Connect to the instance
-connection.connect(async function(err) {
-  if (err) {
-    console.error('Database connection failed: ' + err.stack);
-    return;
-  }
+async function run(){
+  //Creating a connection with the MySQL instance
+  var connection = new mysql({
+    host     : process.env.RDS_HOSTNAME,
+    user     : process.env.RDS_USERNAME,
+    password : process.env.RDS_PASSWORD,
+    port     : process.env.RDS_PORT,
+    database : process.env.RDS_DB_NAME,
+    ssl      : "Amazon RDS",
+  });
 
   console.log('Connected to database.');
 
@@ -27,11 +22,23 @@ connection.connect(async function(err) {
 
   //Run the migration functions
   console.log('Running Migration.');
-  migrate(connection, data);
+  await migrate(connection, data);
 
   //CLoses the server on a complete migration
   console.log('Migration Complete.');
-  connection.end();
+}
 
-});
+run();
+
+// //Connect to the instance
+// connection.connect(async function(err) {
+//   if (err) {
+//     console.error('Database connection failed: ' + err.stack);
+//     return;
+//   }
+
+  
+//   connection.end();
+
+// });
 
