@@ -125,6 +125,7 @@ CREATE TABLE UserDevice (
 CREATE TABLE Follow (
   userInfoID INT NOT NULL,
   recipientID INT NOT NULL,
+  PIT DATETIME,
   PRIMARY KEY (userInfoID, recipientID),
   FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
   FOREIGN KEY (recipientID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE
@@ -222,6 +223,7 @@ CREATE TABLE Trust (
   topicID INT NOT NULL,
   cachedAgrees INT DEFAULT 0,
   cachedDisagrees INT DEFAULT 0,
+  PIT DATETIME,
   PRIMARY KEY (userInfoID, recipientID, topicID),
   FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
   FOREIGN KEY (recipientID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
