@@ -1,4 +1,5 @@
 const MigrateSingleton = require('../singleton');
+const glob = require('../global-functions');
 
 module.exports = async (conn, data) => {
 
@@ -20,7 +21,8 @@ module.exports = async (conn, data) => {
             await conn.query(`INSERT INTO ChatMembership (userInfoID, channelID, accepted, readReceipts, notifications) 
                 VALUES (${migrationSingleton.userInfoIDMap[m]}, "${chat.channel}", ${userz[m].accepted}, ${userz[m].readReceipts}, ${userz[m].notifications})`);
         }
-        console.log("   another 1");
+        
+        glob.reportProgress(chat, data.chats, modulus=5);
     }
 
     console.log("✓ Sucessful Chat Membership Export");

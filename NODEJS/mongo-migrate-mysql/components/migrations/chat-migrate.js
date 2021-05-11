@@ -1,5 +1,6 @@
 const MigrateSingleton = require('../singleton');
 const MigrateAsset = require('./asset-migrate');
+const glob = require('../global-functions');
 
 module.exports = async (conn, data) => {
 
@@ -18,13 +19,15 @@ module.exports = async (conn, data) => {
     var realChatImg = chatImg == null ? null : `"${chatImg}"`;
     //TODO: DO THIS
     var result = conn.query(`INSERT INTO Chat (channelID, assetID, chatName, timeToken, groupChat) 
-        VALUES ("${chat.channel}", ${realChatImg}, null, 0, ${groupChat})`);
+        VALUES ("${chat.channel}", ${realChatImg}, null, 0, ${chat.groupChat})`);
 
     //Extract id from result
     id = result.insertId;
 
     //Map mongo and mysql ids
     chatIDs[chat._id.$oid] = id;
+
+    glob.reportProgress(chat, data.chats, modulus=5);
 
   }
   
