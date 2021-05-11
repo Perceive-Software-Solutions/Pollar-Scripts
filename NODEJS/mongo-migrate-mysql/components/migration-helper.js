@@ -13,6 +13,7 @@ const subscriptionMigrate = require('./migrations/subscription-migrate');
 const notifSettingMigrate = require('./migrations/notifSetting-migrate');
 const trustMigrate = require('./migrations/trust-migrate');
 const userPhoneMigrate = require('./migrations/userPhone-migrate');
+const userEmailMigrate = require('./migrations/userEmail-migrate');
 
 
 module.exports = async (conn, data) => {
@@ -62,5 +63,8 @@ module.exports = async (conn, data) => {
 
   //Migrate userPhones
   await userPhoneMigrate(conn, data);
+
+  //Migrate userEmails
+  await userEmailMigrate(conn, data);
 
 }
