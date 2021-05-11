@@ -3,7 +3,10 @@
 class MigrateSingleton {
 
   constructor() {
-    this.userIDMap = {};
+    this.userInfoIDMap = {};
+    this.userMainIDMap = {};
+    this.userMain2Info = {};
+    this.categoryIDMap = {};
   }
 
 }

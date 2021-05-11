@@ -1,9 +1,17 @@
 const userInfoMigrate = require('./migrations/userInfo-migrate');
+const userMainMigrate = require('./migrations/userMain-migrate');
+const categoryMigrate = require('./migrations/category-migrate');
 
-module.exports = (conn, data) => {
 
+module.exports = async (conn, data) => {
   //Calls all the migrate functions
 
   //Migrate user infos
-  userInfoMigrate(conn, data)
+  await userInfoMigrate(conn, data)
+
+  //Migrate user mains
+  await userMainMigrate(conn, data)
+
+  //Migrate categories
+  await categoryMigrate(conn, data)
 }
