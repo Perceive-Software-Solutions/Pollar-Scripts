@@ -24,5 +24,5 @@ module.exports = async (conn, data) => {
   await pollMigrate(conn, data)
   
   //Migrate posts
-  await postMigrate(conn, data)
+  // await postMigrate(conn, data)
 }

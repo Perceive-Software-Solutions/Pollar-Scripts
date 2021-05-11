@@ -1,5 +1,6 @@
 const MigrateSingleton = require('../singleton');
 const MigrateAsset = require('./asset-migrate');
+const glob = require('../global-functions');
 
 module.exports = async (conn, data) => {
 
@@ -11,14 +12,14 @@ module.exports = async (conn, data) => {
 
   //Parse polls into exportable objects
   for(poll of data.polls){ //TODO Put in assetID
-    var pollAss;
-    if(topic.image!=null){
-        pollAss = MigrateAsset.MigrateAsset(conn, [topic.image], 0);
+    var pollAss = null;
+    if(poll.image!=null){
+        pollAss = MigrateAsset.MigrateAsset(conn, [poll.image], 0);
     }
-    var realPollAss = pollAss == null ? null : `'${pollAss}'`;
+    var realPollAss = pollAss == null ? null : `"${pollAss}"`;
 
     var result = conn.query(`INSERT INTO Poll (userInfoID, topicID, assetID, title, content, PIT, pollStatus, pollType, anon, draft) 
-        VALUES ('${migrationSingleton.userInfoIDMap[poll.userInfoId.$oid]}', '${migrationSingleton.topicIDMap[poll.topicId]}', '${realPollAss}', '${poll.title}', '${poll.content}', '${poll.timeSubmitted.$date}', '${poll.status}', '${poll.type}', ${poll.anonymous}, ${poll.draft})`);
+        VALUES (${migrationSingleton.userInfoIDMap[poll.userInfoId.$oid]}, ${migrationSingleton.topicIDMap[poll.topicId.$oid]}, ${realPollAss}, "${poll.title}", "${poll.content}", "${glob.toMySQLDateTime(poll.timeSubmitted.$date)}", "${poll.status}", '${poll.type}', ${poll.anonymous}, ${poll.draft})`);
 
     //Extract id from result
     id = result.insertId;

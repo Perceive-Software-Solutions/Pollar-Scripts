@@ -11,13 +11,13 @@ module.exports = async (conn, data) => {
 
   //Parse topics into exportable objects
   for(topic of data.topics){
-    var topicImg;
+    var topicImg = null;
     if(topic.image!=null){
         topicImg = MigrateAsset.MigrateAsset(conn, [topic.image], 0);
     }
-    var realTopicImg = topicImg == null ? null : `'${topicImg}'`;
+    var realTopicImg = topicImg == null ? null : `"${topicImg}"`;
 
-    var result = conn.query(`INSERT INTO Topic (topicName, categoryID, assetID) VALUES ('${topic.name}', ${migrationSingleton.categoryIDMap[topic.categoryId]}, ${realTopicImg})`);
+    var result = conn.query(`INSERT INTO Topic (topicName, categoryID, assetID) VALUES ("${topic.name}", ${migrationSingleton.categoryIDMap[topic.categoryId.$oid]}, ${realTopicImg})`);
 
     //Extract id from result
     id = result.insertId;
