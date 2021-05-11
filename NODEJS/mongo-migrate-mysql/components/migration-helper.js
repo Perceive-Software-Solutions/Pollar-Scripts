@@ -6,33 +6,49 @@ const pollMigrate = require('./migrations/poll-migrate');
 const chatMigrate = require('./migrations/chat-migrate');
 const chatMembershipMigrate = require('./migrations/chatMembership-migrate');
 const postMigrate = require('./migrations/post-migrate');
+const followMigrate = require('./migrations/follow-migrate');
+const pollResponseMigrate = require('./migrations/pollresponse-migrate');
+const postStatMigrate = require('./migrations/poststat-migrate');
+const subscriptionMigrate = require('./migrations/subscription-migrate');
 
 
 module.exports = async (conn, data) => {
   //Calls all the migrate functions
 
   //Migrate categories
-  await categoryMigrate(conn, data)
+  await categoryMigrate(conn, data);
 
   //Migrate topics
-  await topicMigrate(conn, data)
+  await topicMigrate(conn, data);
   
   //Migrate user infos
-  await userInfoMigrate(conn, data)
+  await userInfoMigrate(conn, data);
 
   //Migrate user mains
-  await userMainMigrate(conn, data)
+  await userMainMigrate(conn, data);
 
   //Migrate polls
-  await pollMigrate(conn, data)
+  await pollMigrate(conn, data);
   
   //Migrate posts
-  await postMigrate(conn, data)
+  await postMigrate(conn, data);
 
   //Migrate chats
-  await chatMigrate(conn, data)
+  await chatMigrate(conn, data);
 
   //Migrate chat memberships
-  await chatMembershipMigrate(conn, data)
+  await chatMembershipMigrate(conn, data);
+
+  //Migrate follows
+  await followMigrate(conn, data);
+
+  //Migrate Poll Responses
+  await pollResponseMigrate(conn, data);
+  
+  //Migrate Post Statistics
+  await postStatMigrate(conn, data);
+  
+  //Migrate Subscriptions
+  await subscriptionMigrate(conn, data);
 
 }
