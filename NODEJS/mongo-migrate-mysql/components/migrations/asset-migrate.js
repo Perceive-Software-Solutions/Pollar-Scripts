@@ -6,17 +6,20 @@ module.exports.Types = TypeEmun;
 
 //Takes a list of links to convert into an asset collection
 //Works as a subroutine
-module.exports.MigrateAsset = (conn, assets, type) => {
+module.exports.MigrateAsset = (conn, assets, type, quiet = false) => {
 
-  console.log("  - Subrotuine: Exporting Asset...");
+  if(!quiet)
+    console.log(`  - Subrotuine: Exporting Asset Typed "${TypeEmun.get(type)}"...`);
   
   if(!TypeEmun.has(type)){
-    console.error("  - Subroutine: ! Invalid Type");
+    if(!quiet)
+      console.error("  - Subroutine: ! Invalid Type");
     return;
   }
 
   if(assets.length == 0){
-    console.error("  - Subroutine: ! Empty Assets");
+    if(!quiet)
+      console.error("  - Subroutine: ! Empty Assets");
     return;
   }
   //Create a asset collection with the current date time
@@ -25,10 +28,11 @@ module.exports.MigrateAsset = (conn, assets, type) => {
 
   //Create an asset model for each asset
   for(asset of assets){
-    var result = conn.query(`INSERT INTO Asset (link, collectionID, assetType) VALUES ("${asset}", ${collectionID}, "${TypeEmun[type]}")`);
+    var result = conn.query(`INSERT INTO Asset (link, collectionID, assetType) VALUES ("${asset}", ${collectionID}, "${TypeEmun.get(type)}")`);
   }
 
-  console.log("  - Subrotuine: ✓ Asset Exported");
+  if(!quiet)
+    console.log("  - Subrotuine: ✓ Asset Exported");
 
   return collectionID;
 

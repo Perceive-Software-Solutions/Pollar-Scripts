@@ -1,4 +1,5 @@
 const MigrateSingleton = require('../singleton');
+const glob = require('../global-functions');
 
 module.exports = async (conn, data) => {
 
@@ -17,7 +18,8 @@ module.exports = async (conn, data) => {
 
     //Map mongo and mysql ids
     categoryIDs[category._id.$oid] = id;
-
+    
+    glob.reportProgress(category, data.categories, modulus=5);
   }
 
   //Export the categoryID map

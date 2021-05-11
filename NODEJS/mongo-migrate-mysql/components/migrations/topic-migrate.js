@@ -1,5 +1,6 @@
 const MigrateSingleton = require('../singleton');
 const MigrateAsset = require('./asset-migrate');
+const glob = require('../global-functions');
 
 module.exports = async (conn, data) => {
 
@@ -13,7 +14,7 @@ module.exports = async (conn, data) => {
   for(topic of data.topics){
     var topicImg = null;
     if(topic.image!=null){
-        topicImg = MigrateAsset.MigrateAsset(conn, [topic.image], 0);
+        topicImg = MigrateAsset.MigrateAsset(conn, [topic.image], 0, quiet=true);
     }
     var realTopicImg = topicImg == null ? null : `"${topicImg}"`;
 
@@ -24,6 +25,8 @@ module.exports = async (conn, data) => {
 
     //Map mongo and mysql ids
     topicIDs[topic._id.$oid] = id;
+
+    glob.reportProgress(topic, data.topics, modulus=5);
 
   }
 

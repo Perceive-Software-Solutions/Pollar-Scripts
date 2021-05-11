@@ -1,29 +1,54 @@
 const MigrateSingleton = require('../singleton');
+const MigrateAsset = require('./asset-migrate');
+const glob = require('../global-functions');
 
 module.exports = async (conn, data) => {
 
-  console.log("Exporting Polls...");
+  console.log("Exporting Posts...");
 
   const migrationSingleton = new MigrateSingleton().getInstance();
 
-  var pollIDs = migrationSingleton.pollIDMap;
+  var postIDs = migrationSingleton.postIDMap;
 
-  //Parse polls into exportable objects
-  for(poll of data.polls){ //TODO Put in assetID
-    // var result = conn.query(`INSERT INTO Poll (userInfoID, topicID, assetID, title, content, PIT, pollStatus, pollType, anon, draft) 
-        // VALUES ('${migrationSingleton.userInfoIDMap[poll.userInfoId.$oid]}', '${migrationSingleton.topicIDMap[poll.topicId]}', '${}', '${poll.title}', '${poll.content}', '${poll.timeSubmitted.$date}', '${poll.status}', '${poll.type}', ${poll.anonymous}, ${poll.draft})`);
+  //Parse posts into exportable objects
+  for(post of data.posts){
+
+    var postGif = null;
+    var postImage = null;
+    var postLink = null;
+    if(post.images.length > 0){
+      postImage = MigrateAsset.MigrateAsset(conn, post.images, 0, quiet = true);
+    }
+    else if(post.video != null){
+      postImage = MigrateAsset.MigrateAsset(conn, [post.video], 1, quiet = true);
+    }
+    else if(post.links != null && post.links.length > 0){
+      postLink = MigrateAsset.MigrateAsset(conn, post.links, 3, quiet = true);
+    }
+    else if(post.gif != null){
+      postGif = MigrateAsset.MigrateAsset(conn, [post.gif], 2, quiet = true);
+    }
+
+    var postAsset = postImage != null ? `"${postImage}"` : postLink != null ? `"${postLink}"` : postGif != null ? `"${postGif}"` : null;
+    var parentID = post.parentId == null ? null : post.parentType == "poll" ? migrationSingleton.pollIDMap[post.parentId.$oid] : null;
+    var vote = !post.vote ? null : post.vote
+
+    var result = conn.query(`INSERT INTO Post (userInfoID, parentTopic, parentID, parentType, assetID, messageText, vote, PIT, cachedLikes, isHidden) 
+        VALUES (${migrationSingleton.userInfoIDMap[post.userInfoId.$oid]}, ${migrationSingleton.topicIDMap[post.parentTopic.$oid]}, ${parentID}, "${post.parentType}", ${postAsset}, "${post.message}", ${vote}, "${glob.toMySQLDateTime(post.timeSubmitted.$date)}", ${post.cachedLikeCount}, ${post.hidden})`);
 
     //Extract id from result
     id = result.insertId;
 
     //Map mongo and mysql ids
-    pollIDs[poll._id.$oid] = id;
+    postIDs[post._id.$oid] = id;
+
+    glob.reportProgress(post, data.posts, modulus=5);
 
   }
 
-  //Export the pollId map
-  migrationSingleton.pollIDMap = pollIDs;
+  //Export the postId map
+  migrationSingleton.postIDMap = postIDs;
 
-  console.log("✓ Sucessful Poll Export");
+  console.log("✓ Sucessful Posts Export");
 
 }

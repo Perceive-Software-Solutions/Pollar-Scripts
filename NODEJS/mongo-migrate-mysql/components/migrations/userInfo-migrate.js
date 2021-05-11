@@ -1,5 +1,6 @@
 const MigrateSingleton = require('../singleton');
 const MigrateAsset = require('./asset-migrate');
+const glob = require('../global-functions');
 
 module.exports = async (conn, data) => {
 
@@ -14,7 +15,7 @@ module.exports = async (conn, data) => {
     
     var profilePicture = null
     if(user.image != null){
-      profilePicture = MigrateAsset.MigrateAsset(conn, [user.image], 0);
+      profilePicture = MigrateAsset.MigrateAsset(conn, [user.image], 0, quiet = true);
     }
     
     var gender = user.gender == null ? null : `'${user.gender}'`;
@@ -29,6 +30,8 @@ module.exports = async (conn, data) => {
 
     //Map userMain-ids to userInfo-ids
     migrationSingleton.userMain2Info[user.userMainId.$oid] = user._id.$oid;
+
+    glob.reportProgress(user, data.userinfos, modulus=5);
   }
 
   //Export the userId map
