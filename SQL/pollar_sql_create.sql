@@ -134,12 +134,12 @@ CREATE TABLE Follow (
 CREATE TABLE PollResponse (
   userInfoID INT NOT NULL,
   pollID INT NOT NULL,
-  createdBy INT,
+  modifiedBy INT,
   vote BOOL,
   PIT DATETIME NOT NULL,
   PRIMARY KEY (userInfoID, pollID),
   FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID),
-  FOREIGN KEY (createdBy) REFERENCES UserInfo(userInfoID) ON DELETE SET NULL,
+  FOREIGN KEY (modifiedBy) REFERENCES UserInfo(userInfoID) ON DELETE SET NULL,
   FOREIGN KEY (pollID) REFERENCES Poll(pollID) ON DELETE CASCADE
 );
 
@@ -184,6 +184,7 @@ CREATE TABLE PostStat (
 CREATE TABLE Subscription (
   userInfoID INT NOT NULL,
   topicID INT NOT NULL,
+  PIT DATETIME,
   PRIMARY KEY (topicID, userInfoID),
   FOREIGN KEY (topicID) REFERENCES Topic(topicID) ON DELETE CASCADE,
   FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE
