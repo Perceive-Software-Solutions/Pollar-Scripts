@@ -7,6 +7,9 @@ class MigrateSingleton {
     this.userMainIDMap = {};
     this.userMain2Info = {};
     this.categoryIDMap = {};
+    this.topicIDMap = {};
+    this.pollIDMap = {};
+    this.postIDMap = {};
   }
 
 }

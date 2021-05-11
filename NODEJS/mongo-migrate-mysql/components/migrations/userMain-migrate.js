@@ -22,7 +22,7 @@ module.exports = async (conn, data) => {
     id = result.insertId;
 
     //Map mongo and mysql ids
-    userIDs[user._id.$oid] = id
+    userIDs[user._id.$oid] = id;
     
   }
 

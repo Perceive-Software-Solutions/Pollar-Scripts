@@ -25,7 +25,7 @@ module.exports.MigrateAsset = (conn, assets, type) => {
 
   //Create an asset model for each asset
   for(asset of assets){
-    var result = conn.query(`INSERT INTO Asset (link, collectionID, assetType) VALUES ('${asset}', ${collectionID}, '${TypeEmun[type]}')`);
+    var result = conn.query(`INSERT INTO Asset (link, collectionID, assetType) VALUES ("${asset}", ${collectionID}, "${TypeEmun[type]}")`);
   }
 
   console.log("  - Subrotuine: ✓ Asset Exported");
