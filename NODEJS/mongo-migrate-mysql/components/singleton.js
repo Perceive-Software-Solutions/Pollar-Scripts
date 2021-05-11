@@ -10,6 +10,7 @@ class MigrateSingleton {
     this.topicIDMap = {};
     this.pollIDMap = {};
     this.postIDMap = {};
+    this.chatIDMap = {};
   }
 
 }

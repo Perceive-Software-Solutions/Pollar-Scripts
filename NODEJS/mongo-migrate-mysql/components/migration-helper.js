@@ -3,6 +3,8 @@ const userMainMigrate = require('./migrations/userMain-migrate');
 const categoryMigrate = require('./migrations/category-migrate');
 const topicMigrate = require('./migrations/topic-migrate');
 const pollMigrate = require('./migrations/poll-migrate');
+const chatMigrate = require('./migrations/chat-migrate');
+const chatMigrate = require('./migrations/chatMembership-migrate');
 
 
 module.exports = async (conn, data) => {
@@ -25,4 +27,10 @@ module.exports = async (conn, data) => {
   
   //Migrate posts
   // await postMigrate(conn, data)
+
+  //Migrate chats
+  await chatMigrate(conn, data)
+
+  //Migrate chat memberships
+  await chatMembershipMigrate(conn, data)
 }
