@@ -6,7 +6,7 @@ module.exports = async (conn, data) => {
 
   console.log("Exporting NotificationSettings...");
 
-  // const migrationSingleton = new MigrateSingleton().getInstance();
+  const migrationSingleton = new MigrateSingleton().getInstance();
 
   // userSettingID to userMainID
   var uSet2uMain = {};
@@ -14,6 +14,8 @@ module.exports = async (conn, data) => {
   for(uSetting of data.usersettings){
     uSet2uMain[uSetting._id.$oid] = uSetting.userMainId.$oid;
   }
+
+  migrationSingleton.userSettingID2userMainID = uSet2uMain;
 
   //Parse NotificationSettings into exportable objects
   for(notifSet of data.notificationsettings){ //TODO double check that 0=off, 1=follwoers, 2=everyone
