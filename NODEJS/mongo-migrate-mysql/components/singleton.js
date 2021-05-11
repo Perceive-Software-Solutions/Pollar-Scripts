@@ -12,6 +12,7 @@ class MigrateSingleton {
     this.postIDMap = {};
     this.chatIDMap = {};
     this.userSettingID2userMainID = {};
+    this.notificationIDMap = {};
   }
 
 }
