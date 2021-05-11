@@ -16,11 +16,11 @@ module.exports = async (conn, data) => {
     id = result.insertId;
 
     //Map mongo and mysql ids
-    categoryIDs[category._id.$oid] = id
+    categoryIDs[category._id.$oid] = id;
 
   }
 
-  //Export the userId map
+  //Export the categoryID map
   migrationSingleton.categoryIDMap = categoryIDs;
 
   console.log("✓ Sucessful Categories Export");

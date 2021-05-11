@@ -25,7 +25,7 @@ module.exports = async (conn, data) => {
     id = result.insertId;
 
     //Map mongo and mysql ids
-    userIDs[user._id.$oid] = id
+    userIDs[user._id.$oid] = id;
 
     //Map userMain-ids to userInfo-ids
     migrationSingleton.userMain2Info[user.userMainId.$oid] = user._id.$oid;
