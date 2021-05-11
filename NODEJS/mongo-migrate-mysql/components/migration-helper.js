@@ -10,6 +10,8 @@ const followMigrate = require('./migrations/follow-migrate');
 const pollResponseMigrate = require('./migrations/pollresponse-migrate');
 const postStatMigrate = require('./migrations/poststat-migrate');
 const subscriptionMigrate = require('./migrations/subscription-migrate');
+const notifSettingMigrate = require('./migrations/notifSetting-migrate');
+const trustMigrate = require('./migrations/trust-migrate');
 
 
 module.exports = async (conn, data) => {
@@ -50,5 +52,11 @@ module.exports = async (conn, data) => {
   
   //Migrate Subscriptions
   await subscriptionMigrate(conn, data);
+
+  //Migrate notifSettings
+  await notifSettingMigrate(conn, data);
+
+  //Migrate trusts
+  await trustMigrate(conn, data);
 
 }
