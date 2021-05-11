@@ -8,7 +8,7 @@ module.exports = async (conn, data) => {
   const migrationSingleton = new MigrateSingleton().getInstance();
 
   //Parse UserEmails into exportable objects
-  for(uEmail of data.useremails){ //TODO talk about verified
+  for(uEmail of data.useremails){ 
     conn.query(`INSERT INTO UserEmail (email, userMainID, code, verified) 
         VALUES ("${uEmail.email}", ${migrationSingleton.userMainIDMap[uEmail.userMainId.$oid]}, ${uEmail.code}, ${true})`);
 

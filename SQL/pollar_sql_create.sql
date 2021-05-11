@@ -261,6 +261,8 @@ CREATE TABLE Notif (
   notificationID INT NOT NULL AUTO_INCREMENT,
   userInfoID INT NOT NULL,
   actorID INT,
+  parent VARCHAR(50) NOT NULL,
+  child VARCHAR(50) NOT NULL,
   notifType VARCHAR(50) NOT NULL,
   typeID INT,
   subjectNotif TEXT,
@@ -269,6 +271,14 @@ CREATE TABLE Notif (
   PRIMARY KEY (notificationID),
   FOREIGN KEY (userInfoID) REFERENCES UserInfo(userInfoID) ON DELETE CASCADE,
   FOREIGN KEY (actorID) REFERENCES UserInfo(userInfoID) ON DELETE SET NULL
+);
+
+CREATE TABLE NotifActor (
+	notifID INT NOT NULL,
+    actorID INT NOT NULL,
+    PRIMARY KEY(notifID, actorID),
+    FOREIGN KEY (notifID) REFERENCES Notif(notificationID) ON DELETE CASCADE,
+    FOREIGN KEY (actorID) REFERENCES UserInfo(userInfoID) 
 );
 
 CREATE TABLE AssetMessage (

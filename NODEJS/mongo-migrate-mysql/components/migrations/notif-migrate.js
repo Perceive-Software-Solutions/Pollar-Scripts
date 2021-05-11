@@ -3,30 +3,65 @@ const glob = require('../global-functions');
 
 module.exports = async (conn, data) => {
 
-  console.log("Exporting Notifs...");
+    console.log("Exporting Notifs...");
 
-  const migrationSingleton = new MigrateSingleton().getInstance();
+    const migrationSingleton = new MigrateSingleton().getInstance();
 
-  var notifIDs = migrationSingleton.notificationIDMap;
+    var notifIDs = migrationSingleton.notificationIDMap;
 
-  //Parse notifs into exportable objects
-  for(notif of data.notifications){ //TODO talk about notifType, list of actorID, map of type, typeID, 
-    var result = conn.query(`INSERT INTO Notif (userInfoID, actorID, notifType, typeID, subjectNotif, PIT, seen) 
-        VALUES (${migrationSingleton.userInfoIDMap[notif.userInfoId.$oid]}, ${notif.}, "${notif.}", ${notif.}, "${notif.subject}", "${glob.toMySQLDateTime(notif.date.$date)}", ${notif.viewed})`);
+    //Parse notifs into exportable objects
+    for (notif of data.notifications) {
+        var tID = 0;
+        switch (notif.type["type"]) {
+            case "poll":
+                tID = migrationSingleton.pollIDMap[notif.typeId];
+                break;
+            case "post":
+                tID = migrationSingleton.postIDMap[notif.typeId];
+                break;
+            case "trust":
+                tID = migrationSingleton.topicIDMap[notif.typeId];
+                break;
+            case "chat":
+                tID = migrationSingleton.chatIDMap[notif.typeId];
+                break;
+            case "userInfo":
+                tID = migrationSingleton.userInfoIDMap[notif.typeId];
+                break;
+            default:
+                continue;
+        }
+        
+        tID = !tID ? null : tID;
 
-    //Extract id from result
-    id = result.insertId;
+        var result = conn.query(`INSERT INTO Notif (userInfoID, parent, child, notifType, typeID, subjectNotif, PIT, seen) 
+            VALUES (${migrationSingleton.userInfoIDMap[notif.userInfoId.$oid]}, "${notif.type["parent"]}", "${notif.type["child"]}", "${notif.type["type"]}", ${tID}, "${notif.subject}", "${glob.toMySQLDateTime(notif.date.$date)}", ${notif.viewed})`);
 
-    //Map mongo and mysql ids
-    notifIDs[notif._id.$oid] = id;
+        //Extract id from result
+        id = result.insertId;
 
-    glob.reportProgress(notif, data.notifications, modulus=5);
+        tempMap = {};
+        
+        for (actID of notif.actorId) {
+            if(!tempMap[actID.$oid]){
+                tempMap[actID.$oid] = true;
+                conn.query(`INSERT INTO NotifActor (notifID, actorID) 
+                VALUES (${id}, ${migrationSingleton.userInfoIDMap[actID.$oid]})`);
 
-  }
+            }
 
-  //Export the notifID map
-  migrationSingleton.notificationIDMap = notifIDs;
+        }
 
-  console.log("✓ Sucessful Notif Export");
+        //Map mongo and mysql ids
+        notifIDs[notif._id.$oid] = id;
+
+        glob.reportProgress(notif, data.notifications, modulus = 5);
+
+    }
+
+    //Export the notifID map
+    migrationSingleton.notificationIDMap = notifIDs;
+
+    console.log("✓ Sucessful Notif Export");
 
 }

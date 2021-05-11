@@ -8,9 +8,9 @@ module.exports = async (conn, data) => {
   const migrationSingleton = new MigrateSingleton().getInstance();
 
   //Parse UserPhones into exportable objects
-  for(uPhone of data.userphonenumbers){ //TODO talk about verified
+  for(uPhone of data.userphonenumbers){
     conn.query(`INSERT INTO UserPhone (phoneNumber, userMainID, code, verified) 
-        VALUES ("${uPhone.phoneNumber}", ${migrationSingleton.userMainIDMap[uPhone.userMainId.$oid]}, ${uPhone.code}, ${false})`);
+        VALUES ("${uPhone.phoneNumber}", ${migrationSingleton.userMainIDMap[uPhone.userMainId.$oid]}, ${uPhone.code}, ${true})`);
 
     glob.reportProgress(uPhone, data.userphonenumbers, modulus=5);
 
