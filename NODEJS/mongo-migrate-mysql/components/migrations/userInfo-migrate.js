@@ -1,4 +1,5 @@
 const MigrateSingleton = require('../singleton');
+const MigrateAsset = require('./asset-migrate');
 
 module.exports = async (conn, data) => {
 
@@ -10,7 +11,15 @@ module.exports = async (conn, data) => {
 
   //Parse user infos into exportable objects
   for(user of data.userinfos){
-    var result = conn.query(`INSERT INTO UserInfo (firstName, lastName, gender, username) VALUES ('${user.firstName}', '${user.lastName}', ${user.gender == null ? null : `'${user.gender}'`}, '${user.username}')`);
+    
+    var profilePicture = null
+    if(user.image != null){
+      profilePicture = MigrateAsset.MigrateAsset(conn, [user.image], 0);
+    }
+    
+    var gender = user.gender == null ? null : `'${user.gender}'`;
+    var userProfile = profilePicture == null ? null : `'${profilePicture}'`;
+    var result = conn.query(`INSERT INTO UserInfo (firstName, lastName, gender, username, profilePicture) VALUES ('${user.firstName}', '${user.lastName}', ${gender}, '${user.username}', ${userProfile})`);
 
     //Extract id from result
     id = result.insertId;
