@@ -8,5 +8,5 @@ module.exports.reportProgress = (x, list, modulus = 1) => {
   var index = list.indexOf(x) + 1;
 
   if(index%modulus == 0 || index == 1 || index == list.length)
-    console.log(`Progress: ${Math.ceil(index/list.length*100)}%`);
+    console.log(`   Progress: ${Math.ceil(index/list.length*100)}%`);
 }

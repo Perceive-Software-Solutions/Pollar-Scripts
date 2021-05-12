@@ -34,7 +34,7 @@ module.exports = async (conn, data) => {
     var vote = !post.vote ? null : post.vote
 
     var result = conn.query(`INSERT INTO Post (userInfoID, parentTopic, parentID, parentType, assetID, messageText, vote, PIT, cachedLikes, isHidden) 
-        VALUES (${migrationSingleton.userInfoIDMap[post.userInfoId.$oid]}, ${migrationSingleton.topicIDMap[post.parentTopic.$oid]}, ${parentID}, "${post.parentType}", ${postAsset}, "${post.message}", ${vote}, "${glob.toMySQLDateTime(post.timeSubmitted.$date)}", ${post.cachedLikeCount}, ${post.hidden})`);
+        VALUES (${migrationSingleton.userInfoIDMap[post.userInfoId.$oid]}, ${migrationSingleton.topicIDMap[post.parentTopic.$oid]}, ${parentID}, "${post.parentType}", ${postAsset}, '${post.message.replace(/\"/g, '"').replace(/'/g, "\\'")}', ${vote}, "${glob.toMySQLDateTime(post.timeSubmitted.$date)}", ${post.cachedLikeCount}, ${post.hidden})`);
 
     //Extract id from result
     id = result.insertId;
