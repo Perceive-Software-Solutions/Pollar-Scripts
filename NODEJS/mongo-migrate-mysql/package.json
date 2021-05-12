@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^9.0.1",
+    "pubnub": "^4.32.0",
     "sync-mysql": "^3.0.1"
   }
 }

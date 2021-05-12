@@ -19,12 +19,6 @@ const notifMigrate = require('./migrations/notif-migrate');
 
 module.exports = async (conn, data) => {
   //Calls all the migrate functions
-
-  //Migrate categories
-  await categoryMigrate(conn, data);
-
-  //Migrate topics
-  await topicMigrate(conn, data);
   
   //Migrate user infos
   await userInfoMigrate(conn, data);
@@ -32,17 +26,23 @@ module.exports = async (conn, data) => {
   //Migrate user mains
   await userMainMigrate(conn, data);
 
-  //Migrate polls
-  await pollMigrate(conn, data);
-  
-  //Migrate posts
-  await postMigrate(conn, data);
-
   //Migrate chats
   await chatMigrate(conn, data);
 
   //Migrate chat memberships
   await chatMembershipMigrate(conn, data);
+
+  //Migrate categories
+  await categoryMigrate(conn, data);
+
+  //Migrate topics
+  await topicMigrate(conn, data);
+
+  //Migrate polls
+  await pollMigrate(conn, data);
+  
+  //Migrate posts
+  await postMigrate(conn, data);
 
   //Migrate follows
   await followMigrate(conn, data);

@@ -13,6 +13,11 @@ module.exports = async (conn, data) => {
   //Transform like sinto post stats
   for(like of data.likes){
 
+    if(!userIDs[like.userInfoId.$oid] || !postIDs[like.postId.$oid]){
+      console.log("    - Like Deleted");
+      continue;
+    }
+
     var result = conn.query(`INSERT INTO PostStat (userInfoID, postID, PIT, liked) VALUES (${userIDs[like.userInfoId.$oid]}, ${postIDs[like.postId.$oid]}, NOW(), 1)`);
 
     glob.reportProgress(like, data.likes, modulus=5);

@@ -9,6 +9,10 @@ module.exports = async (conn, data) => {
 
   //Parse UserPhones into exportable objects
   for(uPhone of data.userphonenumbers){
+
+    if(!uPhone.userMainId)
+      continue;
+
     conn.query(`INSERT INTO UserPhone (phoneNumber, userMainID, code, verified) 
         VALUES ("${uPhone.phoneNumber}", ${migrationSingleton.userMainIDMap[uPhone.userMainId.$oid]}, ${uPhone.code}, ${true})`);
 
