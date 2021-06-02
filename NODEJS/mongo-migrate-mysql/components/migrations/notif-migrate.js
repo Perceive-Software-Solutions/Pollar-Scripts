@@ -34,8 +34,8 @@ module.exports = async (conn, data) => {
         
         tID = !tID ? null : tID;
 
-        var result = conn.query(`INSERT INTO Notif (userInfoID, parent, child, notifType, typeID, subjectNotif, PIT, seen) 
-            VALUES (${migrationSingleton.userInfoIDMap[notif.userInfoId.$oid]}, "${notif.type["parent"]}", "${notif.type["child"]}", "${notif.type["type"]}", ${tID}, "${notif.subject}", "${glob.toMySQLDateTime(notif.date.$date)}", ${notif.viewed})`);
+        var result = conn.query(`INSERT INTO Notif (userInfoID, parent, child, notifType, typeID, subjectNotif, seen) 
+            VALUES (${migrationSingleton.userInfoIDMap[notif.userInfoId.$oid]}, "${notif.type["parent"]}", "${notif.type["child"]}", "${notif.type["type"]}", ${tID}, "${notif.subject}", ${notif.viewed})`);
 
         //Extract id from result
         id = result.insertId;
@@ -45,8 +45,8 @@ module.exports = async (conn, data) => {
         for (actID of notif.actorId) {
             if(!tempMap[actID.$oid]){
                 tempMap[actID.$oid] = true;
-                conn.query(`INSERT INTO NotifActor (notifID, actorID) 
-                VALUES (${id}, ${migrationSingleton.userInfoIDMap[actID.$oid]})`);
+                conn.query(`INSERT INTO NotifActor (notifID, actorID, PIT) 
+                VALUES (${id}, ${migrationSingleton.userInfoIDMap[actID.$oid]}, "${glob.toMySQLDateTime(notif.date.$date)}")`);
 
             }
 

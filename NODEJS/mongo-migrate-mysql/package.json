@@ -12,6 +12,7 @@
   "dependencies": {
     "dotenv": "^9.0.1",
     "pubnub": "^4.32.0",
+    "ssh2": "^0.8.9",
     "sync-mysql": "^3.0.1"
   }
 }

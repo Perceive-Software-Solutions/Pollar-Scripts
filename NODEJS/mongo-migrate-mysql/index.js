@@ -2,6 +2,8 @@ var mysql = require('sync-mysql');
 require('dotenv').config();
 var parse_json = require('./components/json-parser');
 var migrate = require('./components/migration-helper');
+var Client = require('ssh2').Client;
+var ssh = new Client();
 
 async function run(){
   //Creating a connection with the MySQL instance
