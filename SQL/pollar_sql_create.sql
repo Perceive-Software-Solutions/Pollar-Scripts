@@ -54,7 +54,7 @@ CREATE TABLE UserMain (
 
 CREATE TABLE Poll (
   pollID INT NOT NULL AUTO_INCREMENT,
-  userInfoID INT NOT NULL,
+  userInfoID INT,
   topicID INT,
   assetID INT DEFAULT NULL,
   title TEXT DEFAULT NULL,
