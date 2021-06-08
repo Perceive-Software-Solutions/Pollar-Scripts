@@ -18,7 +18,7 @@ module.exports = async (conn, data) => {
     }
     var realTopicImg = topicImg == null ? null : `"${topicImg}"`;
 
-    var result = conn.query(`INSERT INTO Topic (topicName, categoryID, assetID) VALUES ("${topic.name}", ${migrationSingleton.categoryIDMap[topic.categoryId.$oid]}, ${realTopicImg})`);
+    var result = conn.query(`INSERT INTO Topic (topicName, categoryID, collectionID) VALUES ("${topic.name}", ${migrationSingleton.categoryIDMap[topic.categoryId.$oid]}, ${realTopicImg})`);
 
     //Extract id from result
     id = result.insertId;

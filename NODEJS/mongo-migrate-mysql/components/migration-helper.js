@@ -69,6 +69,6 @@ module.exports = async (conn, data) => {
   await userEmailMigrate(conn, data);
 
   //Migrate notifs
-  await notifMigrate(conn, data);
+  //await notifMigrate(conn, data);
 
 }

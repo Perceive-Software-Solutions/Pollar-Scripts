@@ -48,7 +48,7 @@ module.exports = async (conn, data) => {
     var realChatImg = chatImg == null ? null : `"${chatImg}"`;
     var chatName = !chat.chatName ? null : `"${chat.chatName}"`;
     //TODO: DO THIS
-    var result = conn.query(`INSERT INTO Chat (channelID, assetID, chatName, timeToken, groupChat) 
+    var result = conn.query(`INSERT INTO Chat (channelID, collectionID, chatName, timeToken, groupChat) 
         VALUES ("${chat.channel}", ${realChatImg}, ${chatName}, ${timeToken}, ${chat.groupChat})`);
 
     //Extract id from result

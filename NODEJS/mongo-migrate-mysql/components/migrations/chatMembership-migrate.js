@@ -12,9 +12,9 @@ module.exports = async (conn, data) => {
         var userz = {};
         for (var user of chat.users) {
             userz[user.$oid] = {
-                readReceipts: chat.sendReadReceipts[user.$oid] != undefined ? chat.sendReadReceipts[user.$oid] : null,
-                notifications: chat.notificationsEnabled[user.$oid] != undefined ? chat.notificationsEnabled[user.$oid] : null,
-                accepted: chat.chatAccepted[user.$oid] != undefined ? chat.chatAccepted[user.$oid] : null
+                readReceipts: chat.sendReadReceipts[user.$oid] != undefined ? chat.sendReadReceipts[user.$oid] : 1,
+                notifications: chat.notificationsEnabled[user.$oid] != undefined ? chat.notificationsEnabled[user.$oid] : 1,
+                accepted: chat.chatAccepted[user.$oid] != undefined ? chat.chatAccepted[user.$oid] : 0
             };
         }
         for (var m in userz) {

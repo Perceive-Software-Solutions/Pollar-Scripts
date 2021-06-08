@@ -33,7 +33,7 @@ module.exports = async (conn, data) => {
     var parentID = post.parentId == null ? null : post.parentType == "poll" ? migrationSingleton.pollIDMap[post.parentId.$oid] : null;
     var vote = !post.vote ? null : post.vote
 
-    var result = conn.query(`INSERT INTO Post (userInfoID, parentTopic, parentID, parentType, assetID, messageText, vote, PIT, cachedLikes, isHidden) 
+    var result = conn.query(`INSERT INTO Post (userInfoID, parentTopicID, parentPollID, parentType, collectionID, messageText, vote, PIT, cachedLikes, isHidden) 
         VALUES (${migrationSingleton.userInfoIDMap[post.userInfoId.$oid]}, ${migrationSingleton.topicIDMap[post.parentTopic.$oid]}, ${parentID}, "${post.parentType}", ${postAsset}, '${post.message.replace(/\"/g, '"').replace(/'/g, "\\'")}', ${vote}, "${glob.toMySQLDateTime(post.timeSubmitted.$date)}", ${post.cachedLikeCount}, ${post.hidden})`);
 
     //Extract id from result
