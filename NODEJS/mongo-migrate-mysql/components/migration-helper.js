@@ -15,6 +15,8 @@ const trustMigrate = require('./migrations/trust-migrate');
 const userPhoneMigrate = require('./migrations/userPhone-migrate');
 const userEmailMigrate = require('./migrations/userEmail-migrate');
 const notifMigrate = require('./migrations/notif-migrate');
+const deviceMigrate = require('./migrations/device-migrate');
+
 
 
 module.exports = async (conn, data) => {
@@ -67,6 +69,9 @@ module.exports = async (conn, data) => {
 
   //Migrate userEmails
   await userEmailMigrate(conn, data);
+  
+  //Migrate userDevices
+  await userDeviceMigrate(conn, data);
 
   //Migrate notifs
   //await notifMigrate(conn, data);
