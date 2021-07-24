@@ -1,0 +1,6 @@
+# Ignore environment vars
+*.env
+
+# Ignore inputs and outputs
+/out/
+/in/
