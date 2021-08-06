@@ -3,6 +3,8 @@ const MigrateAsset = require('./asset-migrate');
 const glob = require('../global-functions');
 const PubNub = require('pubnub');
 
+
+
 async function getTimeToken(pubnub, channel){
 
   history = await pubnub.fetchMessages({
@@ -18,6 +20,9 @@ async function getTimeToken(pubnub, channel){
 
 }
 
+/**
+ * @deprecated Chats no longer being migrated.
+ */
 module.exports = async (conn, data) => {
 
   console.log("Exporting Chats...");

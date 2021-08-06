@@ -3,10 +3,7 @@ const userMainMigrate = require('./migrations/userMain-migrate');
 const categoryMigrate = require('./migrations/category-migrate');
 const topicMigrate = require('./migrations/topic-migrate');
 const pollMigrate = require('./migrations/poll-migrate');
-const chatMigrate = require('./migrations/chat-migrate');
-const chatMembershipMigrate = require('./migrations/chatMembership-migrate');
 const postMigrate = require('./migrations/post-migrate');
-const followMigrate = require('./migrations/follow-migrate');
 const pollResponseMigrate = require('./migrations/pollresponse-migrate');
 const postStatMigrate = require('./migrations/poststat-migrate');
 const subscriptionMigrate = require('./migrations/subscription-migrate');
@@ -14,9 +11,13 @@ const notifSettingMigrate = require('./migrations/notifSettings-migrate');
 const trustMigrate = require('./migrations/trust-migrate');
 const userPhoneMigrate = require('./migrations/userPhone-migrate');
 const userEmailMigrate = require('./migrations/userEmail-migrate');
-const notifMigrate = require('./migrations/notif-migrate');
-const deviceMigrate = require('./migrations/device-migrate');
+const userDeviceMigrate = require('./migrations/device-migrate');
 
+//Depricated
+const chatMigrate = require('./migrations/chat-migrate');
+const chatMembershipMigrate = require('./migrations/chatMembership-migrate');
+const followMigrate = require('./migrations/follow-migrate');
+const notifMigrate = require('./migrations/notif-migrate');
 
 
 module.exports = async (conn, data) => {
@@ -29,10 +30,10 @@ module.exports = async (conn, data) => {
   await userMainMigrate(conn, data);
 
   //Migrate chats
-  await chatMigrate(conn, data);
+  // await chatMigrate(conn, data);
 
   //Migrate chat memberships
-  await chatMembershipMigrate(conn, data);
+  // await chatMembershipMigrate(conn, data);
 
   //Migrate categories
   await categoryMigrate(conn, data);
@@ -47,7 +48,7 @@ module.exports = async (conn, data) => {
   await postMigrate(conn, data);
 
   //Migrate follows
-  await followMigrate(conn, data);
+  // await followMigrate(conn, data);
 
   //Migrate Poll Responses
   await pollResponseMigrate(conn, data);

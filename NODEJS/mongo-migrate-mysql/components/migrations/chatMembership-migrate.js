@@ -1,6 +1,9 @@
 const MigrateSingleton = require('../singleton');
 const glob = require('../global-functions');
 
+/**
+ * @deprecated Chats no longer being migrated.
+ */
 module.exports = async (conn, data) => {
 
     console.log("Exporting Chat Memberships...");
@@ -19,7 +22,7 @@ module.exports = async (conn, data) => {
         }
         for (var m in userz) {
             await conn.query(`INSERT INTO ChatMembership (userInfoID, channelID, accepted, readReceipts, notifications) 
-                VALUES (${migrationSingleton.userInfoIDMap[m]}, "${chat.channel}", ${userz[m].accepted}, ${userz[m].readReceipts}, ${userz[m].notifications})`);
+                VALUES (${migrationSingleton.userInfoIDMap[m]}, ${chat.channel}, ${userz[m].accepted}, ${userz[m].readReceipts}, ${userz[m].notifications})`);
         }
         
         glob.reportProgress(chat, data.chats, modulus=5);

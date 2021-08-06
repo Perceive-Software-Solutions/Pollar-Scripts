@@ -12,7 +12,7 @@ module.exports = async (conn, data) => {
   //Parse devices 
   for(device of data.userdevices){
 
-    conn.query(`INSERT INTO UserDevice (userMainID, token, device, PIT) VALUES (${userIDs[device.userMainId.$oid]}, ${device.token}, '', NOW())`);
+    conn.query(`INSERT INTO UserDevice (userMainID, token, device, PIT) VALUES (${userIDs[device.userMainId.$oid]}, '${device.token}', '', NOW())`);
 
     glob.reportProgress(device, data.userdevices, modulus=5);
   }
