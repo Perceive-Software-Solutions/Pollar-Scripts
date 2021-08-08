@@ -87,7 +87,8 @@ promisifyS3CopyObject = async (asset) => {
   var params = {
     CopySource: AWS_BUCKET + '/' + key,
     Bucket: AWS_NEW_BUCKET_NAME,
-    Key: key
+    Key: key,
+    ACL: "public-read"
   };
   
   //Promisify the s3 copy object request
