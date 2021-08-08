@@ -1,6 +1,15 @@
 const AWS = require('aws-sdk');
 const MigrateSingleton = require('../singleton');
 
+//Configure AWS access keys
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+});
+
+//Create s3 client
+const s3 = new AWS.S3();
+
 //S3 Bucket for migration
 const AWS_NEW_BUCKET_NAME = process.env.AWS_NEW_BUCKET_NAME,
       AWS_OLD_BUCKET_NAME = process.env.AWS_OLD_BUCKET_NAME,
@@ -13,14 +22,6 @@ module.exports.Types = TypeEmun;
 //Takes a list of links to convert into an asset collection
 //Works as a subroutine
 module.exports.MigrateAsset = async (conn, assets, type, quiet = false) => {
-
-  //Configure AWS access keys
-  AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
-  });
-
-  const s3 = new AWS.S3();
 
   if(!quiet)
     console.log(`  - Subrotuine: Exporting Asset Typed "${TypeEmun.get(type)}"...`);
