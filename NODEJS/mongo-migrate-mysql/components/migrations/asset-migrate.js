@@ -9,8 +9,8 @@ const AWS_NEW_BUCKET_NAME = process.env.AWS_NEW_BUCKET_NAME,
 
 //Configure AWS access keys
 AWS.config.update({
-    accessKeyId: process.env.ACCESS_KEY_ID,
-    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
 });
 
 const TypeEmun = new Map([[0, 'Picture'], [1, 'Video'], [2, 'Gif'], [3, 'Link']]);
