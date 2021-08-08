@@ -76,7 +76,7 @@ module.exports.MigrateAsset = async (conn, assets, type, quiet = false) => {
 promisifyS3CopyObject = async (asset) => {
 
   //Create key
-  const key = asset.split('.amazonaws.com/')[1].replace(" ", "").replace("+", "");
+  const key = asset.split('.amazonaws.com/')[1].replace(" ", "").replace("+", "") + "";
 
   //Select either old topic bucket or old bucket
   const AWS_BUCKET = key.includes("topicPictures") ? AWS_TOPIC_BUCKET_NAME : AWS_OLD_BUCKET_NAME
