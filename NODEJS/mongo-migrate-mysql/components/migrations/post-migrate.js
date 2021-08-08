@@ -19,13 +19,13 @@ module.exports = async (conn, data) => {
     if(post.images.length > 0){
       postImage = await MigrateAsset.MigrateAsset(conn, post.images, 0, quiet = true);
     }
-    else if(post.video != null){
+    else if(post.video != null && post.video != ""){
       postImage = await MigrateAsset.MigrateAsset(conn, [post.video], 1, quiet = true);
     }
     else if(post.links != null && post.links.length > 0){
       postLink = await MigrateAsset.MigrateAsset(conn, post.links, 3, quiet = true);
     }
-    else if(post.gif != null){
+    else if(post.gif != null && post.gif != ""){
       postGif = await MigrateAsset.MigrateAsset(conn, [post.gif], 2, quiet = true);
     }
 

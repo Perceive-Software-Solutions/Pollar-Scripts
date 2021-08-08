@@ -4,7 +4,8 @@ const MigrateSingleton = require('../singleton');
 
 //S3 Bucket for migration
 const AWS_NEW_BUCKET_NAME = process.env.AWS_NEW_BUCKET_NAME,
-      AWS_OLD_BUCKET_NAME = process.env.AWS_OLD_BUCKET_NAME;
+      AWS_OLD_BUCKET_NAME = process.env.AWS_OLD_BUCKET_NAME,
+      AWS_TOPIC_BUCKET_NAME = process.env.AWS_TOPIC_BUCKET_NAME
 
 //Configure AWS access keys
 AWS.config.update({
@@ -37,7 +38,7 @@ module.exports.MigrateAsset = async (conn, assets, type, quiet = false) => {
 
   //Move video or image to new s3 bucket
   if(type == 0 || type == 1){
-    console.error(`  - Subroutine: Copying ${assets.length} ${TypeEmun.get(type)}s to S3 Bucket`);
+    console.error(`  - Subroutine: Copying ${assets.length} ${TypeEmun.get(type)}${assets.length > 1 ? 's': ''} to S3 Bucket`);
 
     //New asset links
     const newAssets = [];
@@ -73,11 +74,16 @@ module.exports.MigrateAsset = async (conn, assets, type, quiet = false) => {
 promisifyS3CopyObject = async (asset) => {
 
   //Create key
-  const key = asset.split('.amazonaws.com/')[1];
+  const key = asset.split('.amazonaws.com/')[1].replace(" ", "").replace("+", "");
+
+  //Select either old topic bucket or old bucket
+  const AWS_BUCKET = key.includes("topicPictures") ? AWS_TOPIC_BUCKET_NAME : AWS_OLD_BUCKET_NAME
+
+  console.warn("    -- Uploading:" + AWS_BUCKET + '/' + key);
   
   //Copying from old to new bucket, while retaining key
   var params = {
-    CopySource: AWS_OLD_BUCKET_NAME + '/' + key,
+    CopySource: AWS_BUCKET + '/' + key,
     Bucket: AWS_NEW_BUCKET_NAME,
     Key: key
   };
@@ -86,7 +92,7 @@ promisifyS3CopyObject = async (asset) => {
   return new Promise((resolve, reject) => {
     s3.copyObject(params, function(err, data) {
       if (err) {
-        console.log(err, err.stack);
+        console.log(err, err.stack, key);
         reject(err);
       }
       resolve(data);

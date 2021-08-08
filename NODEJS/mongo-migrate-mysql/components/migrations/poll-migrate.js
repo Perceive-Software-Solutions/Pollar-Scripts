@@ -1,6 +1,7 @@
 const MigrateSingleton = require('../singleton');
 const MigrateAsset = require('./asset-migrate');
 const glob = require('../global-functions');
+const pollresponseMigrate = require('./pollresponse-migrate');
 
 module.exports = async (conn, data) => {
 
@@ -19,13 +20,13 @@ module.exports = async (conn, data) => {
     if(poll.images.length > 0){
       pollImage = await MigrateAsset.MigrateAsset(conn, poll.images, 0, quiet = true);
     }
-    else if(poll.video != null){
+    else if(poll.video != null && poll.video != ""){
       pollImage = await MigrateAsset.MigrateAsset(conn, [poll.video], 1, quiet = true);
     }
     else if(poll.links.length > 0){
       pollLink = await MigrateAsset.MigrateAsset(conn, poll.links, 3, quiet = true);
     }
-    else if(poll.gif != null){
+    else if(poll.gif != null && poll.gif != ""){
       pollGif = await MigrateAsset.MigrateAsset(conn, [poll.gif], 2, quiet = true);
     }
 
