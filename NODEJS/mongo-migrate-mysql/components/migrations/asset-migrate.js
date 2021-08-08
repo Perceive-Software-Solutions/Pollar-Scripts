@@ -81,7 +81,7 @@ promisifyS3CopyObject = async (asset) => {
   //Select either old topic bucket or old bucket
   const AWS_BUCKET = key.includes("topicPictures") ? AWS_TOPIC_BUCKET_NAME : AWS_OLD_BUCKET_NAME
 
-  console.warn("    -- Uploading:" + AWS_BUCKET + '/' + key);
+  console.log("    -- Uploading:" + AWS_BUCKET + '/' + key);
   
   //Copying from old to new bucket, while retaining key
   var params = {
@@ -97,7 +97,9 @@ promisifyS3CopyObject = async (asset) => {
         console.log(err, err.stack, key);
         reject(err);
       }
-      resolve(data);
+      const newLink = `https://${AWS_NEW_BUCKET_NAME}.s3.amazonaws.com/${key}`
+      console.log("    -- Uploaded: ✓ " + newLink);
+      resolve(newLink);
     });
   });
 }
