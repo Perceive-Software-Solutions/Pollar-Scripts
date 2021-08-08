@@ -14,7 +14,7 @@ module.exports = async (conn, data) => {
   for(topic of data.topics){
     var topicImg = null;
     if(topic.image!=null){
-        topicImg = MigrateAsset.MigrateAsset(conn, [topic.image], 0, quiet=true);
+        topicImg = await MigrateAsset.MigrateAsset(conn, [topic.image], 0, quiet=true);
     }
     var realTopicImg = topicImg == null ? null : `"${topicImg}"`;
 

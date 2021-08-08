@@ -17,16 +17,16 @@ module.exports = async (conn, data) => {
     var pollImage = null;
     var pollLink = null;
     if(poll.images.length > 0){
-      pollImage = MigrateAsset.MigrateAsset(conn, poll.images, 0, quiet = true);
+      pollImage = await MigrateAsset.MigrateAsset(conn, poll.images, 0, quiet = true);
     }
     else if(poll.video != null){
-      pollImage = MigrateAsset.MigrateAsset(conn, [poll.video], 1, quiet = true);
+      pollImage = await MigrateAsset.MigrateAsset(conn, [poll.video], 1, quiet = true);
     }
     else if(poll.links.length > 0){
-      pollLink = MigrateAsset.MigrateAsset(conn, poll.links, 3, quiet = true);
+      pollLink = await MigrateAsset.MigrateAsset(conn, poll.links, 3, quiet = true);
     }
     else if(poll.gif != null){
-      pollGif = MigrateAsset.MigrateAsset(conn, [poll.gif], 2, quiet = true);
+      pollGif = await MigrateAsset.MigrateAsset(conn, [poll.gif], 2, quiet = true);
     }
 
     var pollAsset = pollImage != null ? `"${pollImage}"` : pollLink != null ? `"${pollLink}"` : pollGif != null ? `"${pollGif}"` : null;

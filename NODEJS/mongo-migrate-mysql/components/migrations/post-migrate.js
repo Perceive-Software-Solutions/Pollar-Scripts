@@ -17,16 +17,16 @@ module.exports = async (conn, data) => {
     var postImage = null;
     var postLink = null;
     if(post.images.length > 0){
-      postImage = MigrateAsset.MigrateAsset(conn, post.images, 0, quiet = true);
+      postImage = await MigrateAsset.MigrateAsset(conn, post.images, 0, quiet = true);
     }
     else if(post.video != null){
-      postImage = MigrateAsset.MigrateAsset(conn, [post.video], 1, quiet = true);
+      postImage = await MigrateAsset.MigrateAsset(conn, [post.video], 1, quiet = true);
     }
     else if(post.links != null && post.links.length > 0){
-      postLink = MigrateAsset.MigrateAsset(conn, post.links, 3, quiet = true);
+      postLink = await MigrateAsset.MigrateAsset(conn, post.links, 3, quiet = true);
     }
     else if(post.gif != null){
-      postGif = MigrateAsset.MigrateAsset(conn, [post.gif], 2, quiet = true);
+      postGif = await MigrateAsset.MigrateAsset(conn, [post.gif], 2, quiet = true);
     }
 
     var postAsset = postImage != null ? `"${postImage}"` : postLink != null ? `"${postLink}"` : postGif != null ? `"${postGif}"` : null;

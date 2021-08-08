@@ -48,7 +48,7 @@ module.exports = async (conn, data) => {
 
     var chatImg = null;
     if(chat.image!=null){
-        chatImg = MigrateAsset.MigrateAsset(conn, [chat.image], 0); //TODO check the 0 here and change timeToken, also where r the chat names
+        chatImg = await MigrateAsset.MigrateAsset(conn, [chat.image], 0); //TODO check the 0 here and change timeToken, also where r the chat names
     }
     var realChatImg = chatImg == null ? null : `"${chatImg}"`;
     var chatName = !chat.chatName ? null : `"${chat.chatName}"`;

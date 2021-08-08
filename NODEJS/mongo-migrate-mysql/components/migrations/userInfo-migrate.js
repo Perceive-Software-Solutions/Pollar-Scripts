@@ -15,7 +15,7 @@ module.exports = async (conn, data) => {
     
     var profilePicture = null
     if(user.image != null){
-      profilePicture = MigrateAsset.MigrateAsset(conn, [user.image], 0, quiet = true);
+      profilePicture = await MigrateAsset.MigrateAsset(conn, [user.image], 0, quiet = true);
     }
     
     var gender = user.gender == null ? null : `'${user.gender}'`;
