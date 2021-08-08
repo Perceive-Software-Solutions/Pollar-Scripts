@@ -7,12 +7,6 @@ const AWS_NEW_BUCKET_NAME = process.env.AWS_NEW_BUCKET_NAME,
       AWS_OLD_BUCKET_NAME = process.env.AWS_OLD_BUCKET_NAME,
       AWS_TOPIC_BUCKET_NAME = process.env.AWS_TOPIC_BUCKET_NAME
 
-//Configure AWS access keys
-AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
-});
-
 const TypeEmun = new Map([[0, 'Picture'], [1, 'Video'], [2, 'Gif'], [3, 'Link']]);
 
 module.exports.Types = TypeEmun;
@@ -20,6 +14,12 @@ module.exports.Types = TypeEmun;
 //Takes a list of links to convert into an asset collection
 //Works as a subroutine
 module.exports.MigrateAsset = async (conn, assets, type, quiet = false) => {
+
+  //Configure AWS access keys
+  AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+  });
 
   if(!quiet)
     console.log(`  - Subrotuine: Exporting Asset Typed "${TypeEmun.get(type)}"...`);
