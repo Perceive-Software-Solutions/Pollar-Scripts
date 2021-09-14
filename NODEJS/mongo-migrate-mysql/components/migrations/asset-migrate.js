@@ -78,16 +78,25 @@ promisifyS3CopyObject = async (asset) => {
   //Create key
   const key = asset.split('.amazonaws.com/')[1].replace(" ", "").replace("+", "") + "";
 
+  //New key
+  const newKey = key;
+
   //Select either old topic bucket or old bucket
   const AWS_BUCKET = key.includes("topicPictures") ? AWS_TOPIC_BUCKET_NAME : AWS_OLD_BUCKET_NAME
 
-  console.log("    -- Uploading:" + AWS_BUCKET + '/' + key);
+  console.log("    -- Uploading:" + AWS_BUCKET + '/' + newKey);
+
+  //Add file type to key if it is missing
+  if(newKey.includes('.') == false || newKey.slice(-1) == '_'){
+    newKey = newKey + "parsed.png"
+    console.log("      --o Parsed Extension:" + AWS_NEW_BUCKET_NAME + '/' + newKey);
+  }
   
   //Copying from old to new bucket, while retaining key
   var params = {
     CopySource: AWS_BUCKET + '/' + key,
     Bucket: AWS_NEW_BUCKET_NAME,
-    Key: key,
+    Key: newKey,
     ACL: "public-read"
   };
   
@@ -98,7 +107,7 @@ promisifyS3CopyObject = async (asset) => {
         console.log(err, err.stack, key);
         reject(err);
       }
-      const newLink = `https://${AWS_NEW_BUCKET_NAME}.s3.amazonaws.com/${key}`
+      const newLink = `https://${AWS_NEW_BUCKET_NAME}.s3.amazonaws.com/${newKey}`
       console.log("    -- Uploaded: ✓ " + newLink);
       resolve(newLink);
     });
