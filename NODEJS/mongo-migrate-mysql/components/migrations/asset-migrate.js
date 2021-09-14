@@ -79,7 +79,7 @@ promisifyS3CopyObject = async (asset) => {
   const key = asset.split('.amazonaws.com/')[1].replace(" ", "").replace("+", "") + "";
 
   //New key
-  const newKey = key;
+  var newKey = key;
 
   //Select either old topic bucket or old bucket
   const AWS_BUCKET = key.includes("topicPictures") ? AWS_TOPIC_BUCKET_NAME : AWS_OLD_BUCKET_NAME
