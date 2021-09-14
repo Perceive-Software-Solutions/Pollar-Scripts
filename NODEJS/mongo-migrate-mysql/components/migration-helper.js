@@ -51,19 +51,19 @@ module.exports = async (conn, data) => {
   // await followMigrate(conn, data);
 
   //Migrate Poll Responses
-  await pollResponseMigrate(conn, data);
+  // await pollResponseMigrate(conn, data);
   
   //Migrate Post Statistics
-  await postStatMigrate(conn, data);
+  // await postStatMigrate(conn, data);
   
   //Migrate Subscriptions
-  await subscriptionMigrate(conn, data);
+  // await subscriptionMigrate(conn, data);
 
   //Migrate notifSettings
-  await notifSettingMigrate(conn, data);
+  // await notifSettingMigrate(conn, data);
 
   //Migrate trusts
-  await trustMigrate(conn, data);
+  // await trustMigrate(conn, data);
 
   //Migrate userPhones
   await userPhoneMigrate(conn, data);
@@ -72,7 +72,7 @@ module.exports = async (conn, data) => {
   await userEmailMigrate(conn, data);
   
   //Migrate userDevices
-  await userDeviceMigrate(conn, data);
+  // await userDeviceMigrate(conn, data);
 
   //Migrate notifs
   //await notifMigrate(conn, data);
