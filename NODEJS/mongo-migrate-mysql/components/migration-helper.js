@@ -60,7 +60,7 @@ module.exports = async (conn, data) => {
   // await subscriptionMigrate(conn, data);
 
   //Migrate notifSettings
-  // await notifSettingMigrate(conn, data);
+  await notifSettingMigrate(conn, data);
 
   //Migrate trusts
   // await trustMigrate(conn, data);
